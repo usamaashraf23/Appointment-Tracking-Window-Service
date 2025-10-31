@@ -15,6 +15,7 @@ namespace WindowsService
         private readonly string _connectionString;
         private readonly string _excelFilePath;
         private readonly string _logFilePath;
+        private readonly EmailService _emailService;
         public AppointmentLogs()
         {
             //InitializeComponent();
@@ -22,8 +23,9 @@ namespace WindowsService
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
             _connectionString = ConfigurationManager.ConnectionStrings["AppointmentTracking"].ConnectionString;
-            _excelFilePath = $@"C:\AppointmentReports\Appointment_Tracking_Report_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.xlsx"; 
+            _excelFilePath = $@"C:\AppointmentReports\FDA Agent API Hits Report {DateTime.Now:dd-MM-yyyy}.xlsx"; 
             _logFilePath = @"C:\AppointmentReports\service_log.txt";
+            _emailService = new EmailService();
         }
 
         private void WriteToLog(string message)
@@ -618,6 +620,60 @@ namespace WindowsService
 
 
             return new PopulateResult { CurrentRow = currentRow, SerialNumber = serialNumber };
+        }
+
+        public async Task<string> SendExcelByEmail()
+        {
+            try
+            {
+                //GenerateExcelReport();
+
+                string body = "</br><p style='margin-top:1px;'> Note: This is an auto generated email. Please do not reply to this email. </p></div>";
+                string userEmail = ConfigurationManager.AppSettings["MailTo"];
+
+                if (string.IsNullOrEmpty(userEmail))
+                {
+                    //return new ResponseResults<string>
+                    //{
+                    //    Status = false,
+                    //    Message = "No email found",
+                    //    Data = ""
+                    //};
+                    return "No email found";
+                }
+
+                var bccEmailsString = ConfigurationManager.AppSettings["MailBCC"];
+                List<string> listBCC = bccEmailsString.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+                                                      .Select(email => email.Trim())
+                                                      .ToList();
+
+                Email objEmail = new Email
+                {
+                    body = body,
+                    messageTo = userEmail,
+                    subject = "FDA Agent API Calls Report"
+                };
+
+                await _emailService.SendEmail(userEmail, objEmail, listBCC, _excelFilePath);
+
+                //return new ResponseResults<string>
+                //{
+                //    Status = true,
+                //    Message = "Email sent successfully.",
+                //    Data = ""
+                //};
+                return "Email sent successfully.";
+            }
+            catch (Exception ex)
+            {
+                //return new ResponseResults<string>
+                //{
+                //    Status = false,
+                //    Message = $"Something went wrong: {ex.Message}",
+                //    Data = ""
+                //};
+                return $"Something went wrong: {ex.Message}";
+            }
         }
 
         private int ExecuteScalarQuery(string query)

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.ServiceProcess;
+using System.Threading.Tasks;
 
 namespace WindowsService
 {
     internal static class Program
     {
-        static void Main()
+        static async Task Main()
         {
             //ServiceBase[] ServicesToRun;
             //ServicesToRun = new ServiceBase[]
@@ -15,7 +16,7 @@ namespace WindowsService
             //ServiceBase.Run(ServicesToRun);
 
             AppointmentLogs appointmentLogs = new AppointmentLogs();
-            appointmentLogs.GenerateExcelReport();
+            await appointmentLogs.SendExcelByEmail();
 
         }
     }
