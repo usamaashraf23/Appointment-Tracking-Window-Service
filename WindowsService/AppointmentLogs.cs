@@ -23,7 +23,7 @@ namespace WindowsService
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
             _connectionString = ConfigurationManager.ConnectionStrings["AppointmentTracking"].ConnectionString;
-            _excelFilePath = $@"C:\AppointmentReports\FDA Agent API Hits Report {DateTime.Now:dd-MM-yyyy}.xlsx"; 
+            _excelFilePath = $@"C:\AppointmentReports\FDA Agent API Hits Report {DateTime.Now.AddDays(-1):dd-MM-yyyy hh-mm-ss}.xlsx";
             _logFilePath = @"C:\AppointmentReports\service_log.txt";
             _emailService = new EmailService();
         }
@@ -104,7 +104,7 @@ namespace WindowsService
             worksheet.Column(1).Width = 5;  // S#
             worksheet.Column(2).Width = 20; // Events
             worksheet.Column(3).Width = 15; // Total No. of Hits
-            worksheet.Column(4).Width = 30; // Success
+            worksheet.Column(4).Width = 45; // Success
             worksheet.Column(5).Width = 20; // Exception Reported
             worksheet.Column(6).Width = 10; // Failure
             worksheet.Column(7).Width = 10; // Wrong Hits
@@ -236,7 +236,8 @@ namespace WindowsService
             worksheet.Cells[currentRow, 1].Value = serialNumber;
             worksheet.Cells[currentRow, 2].Value = "Patient Verification";
             worksheet.Cells[currentRow, 3].Value = totalHits;
-            worksheet.Cells[currentRow, 4].Value = string.Format("{0,-42} {1}", "Exact Patient Match", exactMatchCount);
+            worksheet.Cells[currentRow, 4].Value = "Exact Patient Match" + new string((char)160, 44 - "Exact Patient Match".Length) + exactMatchCount;
+            worksheet.Cells[currentRow, 4].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
             worksheet.Cells[currentRow, 5].Value = "No";
             worksheet.Cells[currentRow, 6].Value = 0;
             worksheet.Cells[currentRow, 7].Value = 0;
@@ -245,7 +246,8 @@ namespace WindowsService
             worksheet.Cells[currentRow, 1].Value = "";
             worksheet.Cells[currentRow, 2].Value = "";
             worksheet.Cells[currentRow, 3].Value = "";
-            worksheet.Cells[currentRow, 4].Value = string.Format("{0,-37} {1}", "Multiple Patients Match" , multipleMatchCount);
+            worksheet.Cells[currentRow, 4].Value = "Multiple Patients Match" + new string((char)160, 40 - "Multiple Patients Match".Length) + multipleMatchCount;
+            worksheet.Cells[currentRow, 4].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
             worksheet.Cells[currentRow, 5].Value = "";
             worksheet.Cells[currentRow, 6].Value = "";
             worksheet.Cells[currentRow, 7].Value = "";
@@ -254,7 +256,8 @@ namespace WindowsService
             worksheet.Cells[currentRow, 1].Value = "";
             worksheet.Cells[currentRow, 2].Value = "";
             worksheet.Cells[currentRow, 3].Value = "";
-            worksheet.Cells[currentRow, 4].Value = string.Format("{0,-44} {1}", "Patient Not Exists" , patientNotExistsCount);
+            worksheet.Cells[currentRow, 4].Value = "Patient Not Exists" + new string((char)160, 47 - "Patient Not Exists".Length) + patientNotExistsCount;
+            worksheet.Cells[currentRow, 4].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
             worksheet.Cells[currentRow, 5].Value = "";
             worksheet.Cells[currentRow, 6].Value = "";
             worksheet.Cells[currentRow, 7].Value = "";
@@ -263,7 +266,8 @@ namespace WindowsService
             worksheet.Cells[currentRow, 1].Value = "";
             worksheet.Cells[currentRow, 2].Value = "";
             worksheet.Cells[currentRow, 3].Value = "";
-            worksheet.Cells[currentRow, 4].Value = string.Format("{0,-49} {1}", "Invalid Inputs" , invalidInputsCount);
+            worksheet.Cells[currentRow, 4].Value = "Invalid Inputs" + new string((char)160, 50 - "Invalid Inputs".Length) + invalidInputsCount;
+            worksheet.Cells[currentRow, 4].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
             worksheet.Cells[currentRow, 5].Value = "";
             worksheet.Cells[currentRow, 6].Value = "";
             worksheet.Cells[currentRow, 7].Value = "";
@@ -314,7 +318,8 @@ namespace WindowsService
             worksheet.Cells[currentRow, 1].Value = serialNumber;
             worksheet.Cells[currentRow, 2].Value = "Time Slots";
             worksheet.Cells[currentRow, 3].Value = totalHits;
-            worksheet.Cells[currentRow, 4].Value = string.Format("{0,-52} {1}", "For Dr. Haq" , forDrHaqCount);
+            worksheet.Cells[currentRow, 4].Value = "For Dr. Haq" + new string((char)160, 51 - "For Dr. Haq".Length) + forDrHaqCount;
+            worksheet.Cells[currentRow, 4].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
             worksheet.Cells[currentRow, 5].Value = "No";
             worksheet.Cells[currentRow, 6].Value = "No";
             worksheet.Cells[currentRow, 7].Value = 0;
@@ -323,7 +328,8 @@ namespace WindowsService
             worksheet.Cells[currentRow, 1].Value = "";
             worksheet.Cells[currentRow, 2].Value = "";
             worksheet.Cells[currentRow, 3].Value = "";
-            worksheet.Cells[currentRow, 4].Value = string.Format("{0,-49} {1}", "For Ami Patel" , forAmiPatelCount);
+            worksheet.Cells[currentRow, 4].Value = "For Ami Patel" + new string((char)160, 49 - "For Ami Patel".Length) + forAmiPatelCount;
+            worksheet.Cells[currentRow, 4].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
             worksheet.Cells[currentRow, 5].Value = 0;
             worksheet.Cells[currentRow, 6].Value = "No";
             worksheet.Cells[currentRow, 7].Value = "";
@@ -332,7 +338,8 @@ namespace WindowsService
             worksheet.Cells[currentRow, 1].Value = "";
             worksheet.Cells[currentRow, 2].Value = "";
             worksheet.Cells[currentRow, 3].Value = "";
-            worksheet.Cells[currentRow, 4].Value = string.Format("{0,-42} {1}", "Search First Available" , searchFirstAvailableCount);
+            worksheet.Cells[currentRow, 4].Value = "Search First Available" + new string((char)160, 44 - "Search First Available".Length) + searchFirstAvailableCount;
+            worksheet.Cells[currentRow, 4].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
             worksheet.Cells[currentRow, 5].Value = "";
             worksheet.Cells[currentRow, 6].Value = "No";
             worksheet.Cells[currentRow, 7].Value = "";
@@ -341,7 +348,8 @@ namespace WindowsService
             worksheet.Cells[currentRow, 1].Value = "";
             worksheet.Cells[currentRow, 2].Value = "";
             worksheet.Cells[currentRow, 3].Value = "";
-            worksheet.Cells[currentRow, 4].Value = string.Format("{0,-43} {1}", "Search Specific Date" , searchSpecificDateCount);
+            worksheet.Cells[currentRow, 4].Value = "Search Specific Date" + new string((char)160, 44 - "Search Specific Date".Length) + searchSpecificDateCount;
+            worksheet.Cells[currentRow, 4].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
             worksheet.Cells[currentRow, 5].Value = "";
             worksheet.Cells[currentRow, 6].Value = "No";
             worksheet.Cells[currentRow, 7].Value = "";
@@ -350,7 +358,8 @@ namespace WindowsService
             worksheet.Cells[currentRow, 1].Value = "";
             worksheet.Cells[currentRow, 2].Value = "";
             worksheet.Cells[currentRow, 3].Value = "";
-            worksheet.Cells[currentRow, 4].Value = string.Format("{0,-40} {1}", "Search Telehealth Slot" , searchTelehealthSlotCount);
+            worksheet.Cells[currentRow, 4].Value = "Search Telehealth Slot" + new string((char)160, 43 - "Search Telehealth Slot".Length) + searchTelehealthSlotCount;
+            worksheet.Cells[currentRow, 4].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
             worksheet.Cells[currentRow, 5].Value = "";
             worksheet.Cells[currentRow, 6].Value = "No";
             worksheet.Cells[currentRow, 7].Value = "";
@@ -397,7 +406,8 @@ namespace WindowsService
             worksheet.Cells[currentRow, 1].Value = serialNumber;
             worksheet.Cells[currentRow, 2].Value = "Add Appointment";
             worksheet.Cells[currentRow, 3].Value = totalHits;
-            worksheet.Cells[currentRow, 4].Value = string.Format("{0,-39} {1}", "Appointment Added" , appointmentAddedCount);
+            worksheet.Cells[currentRow, 4].Value = "Appointment Added" + new string((char)160, 40 - "Appointment Added".Length) + appointmentAddedCount;
+            worksheet.Cells[currentRow, 4].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
             worksheet.Cells[currentRow, 5].Value = "No";
             worksheet.Cells[currentRow, 6].Value = "No";
             worksheet.Cells[currentRow, 7].Value = 0;
@@ -406,7 +416,8 @@ namespace WindowsService
             worksheet.Cells[currentRow, 1].Value = "";
             worksheet.Cells[currentRow, 2].Value = "";
             worksheet.Cells[currentRow, 3].Value = "";
-            worksheet.Cells[currentRow, 4].Value = string.Format("{0,-32} {1}", "Already Scheduled Message" , alreadyScheduledCount);
+            worksheet.Cells[currentRow, 4].Value = "Already Scheduled Message" + new string((char)160, 35 - "Already Scheduled Message".Length) + alreadyScheduledCount;
+            worksheet.Cells[currentRow, 4].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
             worksheet.Cells[currentRow, 5].Value = "No";
             worksheet.Cells[currentRow, 6].Value = "No";
             worksheet.Cells[currentRow, 7].Value = "";
@@ -415,7 +426,8 @@ namespace WindowsService
             worksheet.Cells[currentRow, 1].Value = "";
             worksheet.Cells[currentRow, 2].Value = "";
             worksheet.Cells[currentRow, 3].Value = "";
-            worksheet.Cells[currentRow, 4].Value = string.Format("{0,-45} {1}", "14 Days Message" , daysMessageCount);
+            worksheet.Cells[currentRow, 4].Value = "14 Days Message" + new string((char)160, 45 - "14 Days Message".Length) + daysMessageCount;
+            worksheet.Cells[currentRow, 4].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
             worksheet.Cells[currentRow, 5].Value = "No";
             worksheet.Cells[currentRow, 6].Value = "No";
             worksheet.Cells[currentRow, 7].Value = "";
@@ -424,7 +436,8 @@ namespace WindowsService
             worksheet.Cells[currentRow, 1].Value = "";
             worksheet.Cells[currentRow, 2].Value = "";
             worksheet.Cells[currentRow, 3].Value = "";
-            worksheet.Cells[currentRow, 4].Value = string.Format("{0,-48} {1}", "Duplicate Entry" , duplicateEntryCount);
+            worksheet.Cells[currentRow, 4].Value = "Duplicate Entry" + new string((char)160, 48 - "Duplicate Entry".Length) + duplicateEntryCount;
+            worksheet.Cells[currentRow, 4].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
             worksheet.Cells[currentRow, 5].Value = "No";
             worksheet.Cells[currentRow, 6].Value = "No";
             worksheet.Cells[currentRow, 7].Value = "";
@@ -469,17 +482,19 @@ namespace WindowsService
             worksheet.Cells[currentRow, 1].Value = serialNumber;
             worksheet.Cells[currentRow, 2].Value = "Reschedule";
             worksheet.Cells[currentRow, 3].Value = totalHits;
-            worksheet.Cells[currentRow, 4].Value = string.Format("{0,-41} {1}", "24 Hours Reschedule" , hoursRescheduleCount);
+            worksheet.Cells[currentRow, 4].Value = "24 Hours Reschedule" + new string((char)160, 41 - "24 Hours Reschedule".Length) + hoursRescheduleCount;
+            worksheet.Cells[currentRow, 4].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
             worksheet.Cells[currentRow, 5].Value = "No";
             worksheet.Cells[currentRow, 6].Value = "No";
             worksheet.Cells[currentRow, 7].Value = 0;
-            worksheet.Cells[currentRow, 9].Value = "Restrict the Patient to Reschedule due to 24 Hours Check";
+            worksheet.Cells[currentRow, 9].Value = $"Restrict the Patient to Reschedule due to 24 Hours Check";
             currentRow++;
 
             worksheet.Cells[currentRow, 1].Value = "";
             worksheet.Cells[currentRow, 2].Value = "";
             worksheet.Cells[currentRow, 3].Value = "";
-            worksheet.Cells[currentRow, 4].Value = string.Format("{0,-48} {1}", "Rescheduled" , rescheduledCount);
+            worksheet.Cells[currentRow, 4].Value = "Rescheduled" + new string((char)160, 48 - "Rescheduled".Length) + rescheduledCount;
+            worksheet.Cells[currentRow, 4].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
             worksheet.Cells[currentRow, 5].Value = "No";
             worksheet.Cells[currentRow, 6].Value = "No";
             worksheet.Cells[currentRow, 7].Value = "";
@@ -522,7 +537,8 @@ namespace WindowsService
             worksheet.Cells[currentRow, 1].Value = serialNumber;
             worksheet.Cells[currentRow, 2].Value = "Cancelled";
             worksheet.Cells[currentRow, 3].Value = totalHits;
-            worksheet.Cells[currentRow, 4].Value = string.Format("{0,-53} {1}", "Cancelled" , cancelledCount);
+            worksheet.Cells[currentRow, 4].Value = "Cancelled" + new string((char)160, 51 - "Cancelled".Length) + cancelledCount;
+            worksheet.Cells[currentRow, 4].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
             worksheet.Cells[currentRow, 5].Value = cancelledCount;
             worksheet.Cells[currentRow, 6].Value = "No";
             worksheet.Cells[currentRow, 7].Value = 0;
@@ -532,11 +548,12 @@ namespace WindowsService
             worksheet.Cells[currentRow, 1].Value = "";
             worksheet.Cells[currentRow, 2].Value = "";
             worksheet.Cells[currentRow, 3].Value = "";
-            worksheet.Cells[currentRow, 4].Value = string.Format("{0,-44} {1}", "24 Hours Cancelled" , hoursCancelledCount);
+            worksheet.Cells[currentRow, 4].Value = "24 Hours Cancelled" + new string((char)160, 43 - "24 Hours Cancelled".Length) + hoursCancelledCount; worksheet.Cells[currentRow, 4].Style.Font.Name = "Calibri";
+            worksheet.Cells[currentRow, 4].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
             worksheet.Cells[currentRow, 5].Value = cancelledCount;
             worksheet.Cells[currentRow, 6].Value = "No";
             worksheet.Cells[currentRow, 7].Value = "";
-            worksheet.Cells[currentRow, 9].Value = "Restrict the Patient to Cancel due to 24 Hours Check";
+            worksheet.Cells[currentRow, 9].Value = "Restrict the Patient to \bCancel due to 24 Hours Check";
             currentRow++;
 
             var cancelledCell = worksheet.Cells[startRow, 2, currentRow - 1, 2];
@@ -626,7 +643,7 @@ namespace WindowsService
         {
             try
             {
-                //GenerateExcelReport();
+                GenerateExcelReport();
 
                 string body = "</br><p style='margin-top:1px;'> Note: This is an auto generated email. Please do not reply to this email. </p></div>";
                 string userEmail = ConfigurationManager.AppSettings["MailTo"];
