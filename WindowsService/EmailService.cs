@@ -51,7 +51,7 @@ namespace WindowsService
                     msg.Attachments.Add(attachment);
                 }
 
-                 client.Send(msg);
+                 await client.SendMailAsync(msg);
             }
             catch(Exception ex)
             {
