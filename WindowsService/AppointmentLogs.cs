@@ -232,11 +232,11 @@ namespace WindowsService
             var multipleMatchCount = ExecuteScalarQuery(multipleMatchQuery);
             var patientNotExistsCount = ExecuteScalarQuery(patientNotExistsQuery);
             var invalidInputsCount = ExecuteScalarQuery(invalidInputsQuery);
-            var exactMatchExceptionsCount = ExecuteScalarQuery(exactMatchExceptionsQuery);
-            var multipleMatchExceptionsCount = ExecuteScalarQuery(multipleMatchExceptionsQuery);
+            //var exactMatchExceptionsCount = ExecuteScalarQuery(exactMatchExceptionsQuery);
+            //var multipleMatchExceptionsCount = ExecuteScalarQuery(multipleMatchExceptionsQuery);
 
             var totalHits = exactMatchCount + multipleMatchCount + patientNotExistsCount + invalidInputsCount;
-            var totalExceptions = exactMatchExceptionsCount + multipleMatchExceptionsCount;
+            var totalExceptions = /*exactMatchExceptionsCount + multipleMatchExceptionsCount;*/ 0;
             var details = $"Exact Patient Match: {exactMatchCount}\n" +
                           $"Multiple Patients Match: {multipleMatchCount}\n" +
                           $"Patient Not Exists: {patientNotExistsCount}\n" +
@@ -328,14 +328,14 @@ namespace WindowsService
             var searchSpecificDateCount = ExecuteScalarQuery(searchSpecificDateQuery);
             var searchTelehealthSlotCount = ExecuteScalarQuery(searchTelehealthSlotQuery);
 
-            var forDrHaqExceptionCount = ExecuteScalarQuery(forDrHaqExceptionQuery);
-            var forAmiPatelExceptionCount = ExecuteScalarQuery(forAmiPatelExceptionQuery);
-            var searchFirstAvailableExceptionCount = ExecuteScalarQuery(searchFirstAvailableExceptionQuery);
-            var searchSpecificDateExceptionCount = ExecuteScalarQuery(searchSpecificDateExceptionQuery);
-            var searchTelehealthSlotExceptionCount = ExecuteScalarQuery(searchTelehealthSlotExceptionQuery);
+            //var forDrHaqExceptionCount = ExecuteScalarQuery(forDrHaqExceptionQuery);
+            //var forAmiPatelExceptionCount = ExecuteScalarQuery(forAmiPatelExceptionQuery);
+            //var searchFirstAvailableExceptionCount = ExecuteScalarQuery(searchFirstAvailableExceptionQuery);
+            //var searchSpecificDateExceptionCount = ExecuteScalarQuery(searchSpecificDateExceptionQuery);
+            //var searchTelehealthSlotExceptionCount = ExecuteScalarQuery(searchTelehealthSlotExceptionQuery);
 
             var totalHits = forDrHaqCount + forAmiPatelCount + searchFirstAvailableCount + searchSpecificDateCount + searchTelehealthSlotCount;
-            var timeSlotTotalExceptionCount = forDrHaqExceptionCount + forAmiPatelExceptionCount + searchFirstAvailableExceptionCount + searchSpecificDateExceptionCount + searchTelehealthSlotExceptionCount;
+            var timeSlotTotalExceptionCount = /*forDrHaqExceptionCount + forAmiPatelExceptionCount + searchFirstAvailableExceptionCount + searchSpecificDateExceptionCount + searchTelehealthSlotExceptionCount;*/ 0;
 
             worksheet.Cells[currentRow, 1].Value = serialNumber;
             worksheet.Cells[currentRow, 2].Value = "Time Slots";
@@ -418,19 +418,30 @@ namespace WindowsService
 
             var duplicateEntryQuery = @"EXEC sp_Appointment_Tracking_log @MethodName = 'DuplicateMessage'";
 
+            var appointmentAddedExceptionQuery = @"EXEC sp_Appointment_Tracking_log @MethodName = 'AddedAppointment'";
+            var alreadyScheduledExceptionQuery = @"EXEC sp_Appointment_Tracking_log @MethodName = 'AlreadyScheduledAppointment'";
+            var daysMessageExceptionQuery = @"EXEC sp_Appointment_Tracking_log @MethodName = '14DaysMessage'";
+            var duplicateEntryExceptionQuery = @"EXEC sp_Appointment_Tracking_log @MethodName = 'DuplicateMessage'";
+
             var appointmentAddedCount = ExecuteScalarQuery(appointmentAddedQuery);
             var alreadyScheduledCount = ExecuteScalarQuery(alreadyScheduledQuery);
             var daysMessageCount = ExecuteScalarQuery(daysMessageQuery);
             var duplicateEntryCount = ExecuteScalarQuery(duplicateEntryQuery);
 
+            //var appointmentAddedExceptionCount = ExecuteScalarQuery(appointmentAddedExceptionQuery);
+            //var alreadyScheduledExceptionCount = ExecuteScalarQuery(alreadyScheduledExceptionQuery);
+            //var daysMessageExceptionCount = ExecuteScalarQuery(daysMessageExceptionQuery);
+            //var duplicateEntryExceptionCount = ExecuteScalarQuery(duplicateEntryExceptionQuery);
+
             var totalHits = appointmentAddedCount + alreadyScheduledCount + daysMessageCount + duplicateEntryCount;
+            var totalExceptionsHits = /*appointmentAddedExceptionCount + alreadyScheduledExceptionCount + daysMessageExceptionCount + duplicateEntryExceptionQuery;*/ 0;
 
             worksheet.Cells[currentRow, 1].Value = serialNumber;
             worksheet.Cells[currentRow, 2].Value = "Add Appointment";
             worksheet.Cells[currentRow, 3].Value = totalHits;
             worksheet.Cells[currentRow, 4].Value = "Appointment Added";
             worksheet.Cells[currentRow, 5].Value = appointmentAddedCount;
-            worksheet.Cells[currentRow, 6].Value = "No";
+            worksheet.Cells[currentRow, 6].Value = totalExceptionsHits;
             worksheet.Cells[currentRow, 7].Value = 0;
             worksheet.Cells[currentRow, 8].Value = 0;
             currentRow++;
@@ -440,7 +451,7 @@ namespace WindowsService
             worksheet.Cells[currentRow, 3].Value = "";
             worksheet.Cells[currentRow, 4].Value = "Already Scheduled Message";
             worksheet.Cells[currentRow, 5].Value = alreadyScheduledCount;
-            worksheet.Cells[currentRow, 6].Value = "No";
+            worksheet.Cells[currentRow, 6].Value = "";
             worksheet.Cells[currentRow, 7].Value = 0;
             worksheet.Cells[currentRow, 8].Value = 0;
             currentRow++;
@@ -450,7 +461,7 @@ namespace WindowsService
             worksheet.Cells[currentRow, 3].Value = "";
             worksheet.Cells[currentRow, 4].Value = "14 Days Message";
             worksheet.Cells[currentRow, 5].Value = daysMessageCount;
-            worksheet.Cells[currentRow, 6].Value = "No";
+            worksheet.Cells[currentRow, 6].Value = "";
             worksheet.Cells[currentRow, 7].Value = 0;
             worksheet.Cells[currentRow, 8].Value = 0;
             currentRow++;
@@ -460,7 +471,7 @@ namespace WindowsService
             worksheet.Cells[currentRow, 3].Value = "";
             worksheet.Cells[currentRow, 4].Value = "Duplicate Entry";
             worksheet.Cells[currentRow, 5].Value = duplicateEntryCount;
-            worksheet.Cells[currentRow, 6].Value = "No";
+            worksheet.Cells[currentRow, 6].Value = "";
             worksheet.Cells[currentRow, 7].Value = 0;
             worksheet.Cells[currentRow, 8].Value = 0;
             currentRow++;
@@ -673,9 +684,18 @@ namespace WindowsService
             {
                 GenerateExcelReport();
 
-                string body = "</br><p style='margin-top:1px;'> Note: This is an auto generated email. Please do not reply to this email. </p></div>";
+                string body = $@"
+                                <div>
+                                    Dear Sir,<br><br>
+                                    Please find the attached FDA Agent report of {DateTime.Now.AddDays(-1).ToString("dd-MM-yyyy")}<br><br>
+                                    &lt;&lt; FDA Agent API Hits Report - {DateTime.Now.AddDays(-1).ToString("dd-MM-yyyy")} &gt;&gt;<br><br>
+                                    <p style='margin-top:1px;'>Note: This is an auto generated email. Please do not reply to this email.</p>
+                                </div>";
+                //string body = $"<div>Dear Sir,<br><br>Please find the attached FDA Agent report of {DateTime.Now.AddDays(-1).ToString(\"MM-dd-yyyy\")}<br><br>\r\n&lt;&lt; FDA Agent API Hits Report - @{DateTime.Now.AddDays(-1).ToString(\"dd-MM-yyyy\")} &gt;&gt;<br><br>\r\n<p style='margin-top:1px;'>Note: This is an auto generated email. Please do not reply to this email.</p>\r\n</div>";
                 string userEmail = ConfigurationManager.AppSettings["MailTo"];
-
+                List<string> listUser = userEmail.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+                                                      .Select(email => email.Trim())
+                                                      .ToList();
                 if (string.IsNullOrEmpty(userEmail))
                 {
                     //return new ResponseResults<string>
@@ -695,11 +715,11 @@ namespace WindowsService
                 Email objEmail = new Email
                 {
                     body = body,
-                    messageTo = userEmail,
+                    messageTo = string.Join(", ", listUser),
                     subject = "FDA Agent API Calls Report"
                 };
 
-                await _emailService.SendEmail(userEmail, objEmail, listBCC, _excelFilePath);
+                await _emailService.SendEmail(listUser, objEmail, listBCC, _excelFilePath);
 
                 //return new ResponseResults<string>
                 //{

@@ -1,5 +1,6 @@
 ﻿using OfficeOpenXml;
 using System;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.IO;
 using System.ServiceProcess;
@@ -41,13 +42,14 @@ namespace WindowsService
                 WriteToLog("Initializing service components...");
 
                 // Calculate initial delay for 15 minutes
-                //DateTime firstRunTime = DateTime.Now.AddMinutes(15);
-                DateTime firstRunTime = DateTime.Now;
+                DateTime firstRunTime = DateTime.Now.AddMinutes(Convert.ToInt16(ConfigurationManager.AppSettings["windowsServiceTimeInterval"]));
+                //DateTime firstRunTime = DateTime.Now.AddMinutes(5);
+                //DateTime firstRunTime = DateTime.Now;
                 double initialDelay = (firstRunTime - DateTime.Now).TotalMilliseconds;
 
                 _timer = new System.Timers.Timer();
                 _timer.Interval = initialDelay;
-                _timer.Elapsed += OnFirstRun; // ← THIS WAS MISSING!
+                _timer.Elapsed += OnFirstRun;
                 _timer.AutoReset = false;
                 _timer.Start();
 
@@ -82,12 +84,12 @@ namespace WindowsService
             }
         }
 
-        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        private async void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             try
             {
                 WriteToLog("Starting to generate Excel report...");
-                _appointmentLogs.GenerateExcelReport();
+                await _appointmentLogs.SendExcelByEmail();
                 WriteToLog("Excel report generated successfully.");
             }
             catch (Exception ex)

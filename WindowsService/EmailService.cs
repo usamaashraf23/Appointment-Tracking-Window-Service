@@ -12,7 +12,7 @@ namespace WindowsService
 {
     public class EmailService
     {
-        public async Task SendEmail(string mailTo, Email objEmail, List<string> listBCC, string excelFilePath = null)
+        public async Task SendEmail(List<string> mailTo, Email objEmail, List<string> listBCC, string excelFilePath = null)
         {
             try
             {
@@ -38,7 +38,10 @@ namespace WindowsService
                     Priority = MailPriority.High
                 };
 
-                msg.To.Add(mailTo);
+                foreach (var to in mailTo)
+                {
+                    msg.To.Add(to);
+                }
 
                 foreach (var bcc in listBCC)
                 {
