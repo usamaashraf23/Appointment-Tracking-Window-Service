@@ -328,14 +328,14 @@ namespace WindowsService
             var searchSpecificDateCount = ExecuteScalarQuery(searchSpecificDateQuery);
             var searchTelehealthSlotCount = ExecuteScalarQuery(searchTelehealthSlotQuery);
 
-            //var forDrHaqExceptionCount = ExecuteScalarQuery(forDrHaqExceptionQuery);
-            //var forAmiPatelExceptionCount = ExecuteScalarQuery(forAmiPatelExceptionQuery);
-            //var searchFirstAvailableExceptionCount = ExecuteScalarQuery(searchFirstAvailableExceptionQuery);
-            //var searchSpecificDateExceptionCount = ExecuteScalarQuery(searchSpecificDateExceptionQuery);
-            //var searchTelehealthSlotExceptionCount = ExecuteScalarQuery(searchTelehealthSlotExceptionQuery);
+            var forDrHaqExceptionCount = ExecuteScalarQuery(forDrHaqExceptionQuery);
+            var forAmiPatelExceptionCount = ExecuteScalarQuery(forAmiPatelExceptionQuery);
+            var searchFirstAvailableExceptionCount = ExecuteScalarQuery(searchFirstAvailableExceptionQuery);
+            var searchSpecificDateExceptionCount = ExecuteScalarQuery(searchSpecificDateExceptionQuery);
+            var searchTelehealthSlotExceptionCount = ExecuteScalarQuery(searchTelehealthSlotExceptionQuery);
 
             var totalHits = forDrHaqCount + forAmiPatelCount + searchFirstAvailableCount + searchSpecificDateCount + searchTelehealthSlotCount;
-            var timeSlotTotalExceptionCount = /*forDrHaqExceptionCount + forAmiPatelExceptionCount + searchFirstAvailableExceptionCount + searchSpecificDateExceptionCount + searchTelehealthSlotExceptionCount;*/ 0;
+            var timeSlotTotalExceptionCount = forDrHaqExceptionCount + forAmiPatelExceptionCount + searchFirstAvailableExceptionCount + searchSpecificDateExceptionCount + searchTelehealthSlotExceptionCount;;
 
             worksheet.Cells[currentRow, 1].Value = serialNumber;
             worksheet.Cells[currentRow, 2].Value = "Time Slots";
@@ -418,23 +418,23 @@ namespace WindowsService
 
             var duplicateEntryQuery = @"EXEC sp_Appointment_Tracking_log @MethodName = 'DuplicateMessage'";
 
-            var appointmentAddedExceptionQuery = @"EXEC sp_Appointment_Tracking_log @MethodName = 'AddedAppointment'";
-            var alreadyScheduledExceptionQuery = @"EXEC sp_Appointment_Tracking_log @MethodName = 'AlreadyScheduledAppointment'";
-            var daysMessageExceptionQuery = @"EXEC sp_Appointment_Tracking_log @MethodName = '14DaysMessage'";
-            var duplicateEntryExceptionQuery = @"EXEC sp_Appointment_Tracking_log @MethodName = 'DuplicateMessage'";
+            var appointmentAddedExceptionQuery = @"EXEC WS_PROC_AI_APPOINTMENT_EXCEPTIONS @MethodName = 'AddedAppointment'";
+            var alreadyScheduledExceptionQuery = @"EXEC WS_PROC_AI_APPOINTMENT_EXCEPTIONS @MethodName = 'AlreadyScheduledAppointment'";
+            var daysMessageExceptionQuery = @"EXEC WS_PROC_AI_APPOINTMENT_EXCEPTIONS @MethodName = '14DaysMessage'";
+            var duplicateEntryExceptionQuery = @"EXEC WS_PROC_AI_APPOINTMENT_EXCEPTIONS @MethodName = 'DuplicateMessage'";
 
             var appointmentAddedCount = ExecuteScalarQuery(appointmentAddedQuery);
             var alreadyScheduledCount = ExecuteScalarQuery(alreadyScheduledQuery);
             var daysMessageCount = ExecuteScalarQuery(daysMessageQuery);
             var duplicateEntryCount = ExecuteScalarQuery(duplicateEntryQuery);
 
-            //var appointmentAddedExceptionCount = ExecuteScalarQuery(appointmentAddedExceptionQuery);
-            //var alreadyScheduledExceptionCount = ExecuteScalarQuery(alreadyScheduledExceptionQuery);
-            //var daysMessageExceptionCount = ExecuteScalarQuery(daysMessageExceptionQuery);
-            //var duplicateEntryExceptionCount = ExecuteScalarQuery(duplicateEntryExceptionQuery);
+            var appointmentAddedExceptionCount = ExecuteScalarQuery(appointmentAddedExceptionQuery);
+            var alreadyScheduledExceptionCount = ExecuteScalarQuery(alreadyScheduledExceptionQuery);
+            var daysMessageExceptionCount = ExecuteScalarQuery(daysMessageExceptionQuery);
+            var duplicateEntryExceptionCount = ExecuteScalarQuery(duplicateEntryExceptionQuery);
 
             var totalHits = appointmentAddedCount + alreadyScheduledCount + daysMessageCount + duplicateEntryCount;
-            var totalExceptionsHits = /*appointmentAddedExceptionCount + alreadyScheduledExceptionCount + daysMessageExceptionCount + duplicateEntryExceptionQuery;*/ 0;
+            var totalExceptionsHits = appointmentAddedExceptionCount + alreadyScheduledExceptionCount + daysMessageExceptionCount + duplicateEntryExceptionQuery;
 
             worksheet.Cells[currentRow, 1].Value = serialNumber;
             worksheet.Cells[currentRow, 2].Value = "Add Appointment";
@@ -506,12 +506,17 @@ namespace WindowsService
 
             var rescheduledQuery = @"EXEC sp_Appointment_Tracking_log @MethodName = 'RescheduleAppointment'";
 
+            var hoursRescheduleExceptionQuery = @"EXEC WS_PROC_AI_APPOINTMENT_EXCEPTIONS @MethodName = 'HoursRescheduleAppointment'";
+            var rescheduledExceptionQuery = @"EXEC WS_PROC_AI_APPOINTMENT_EXCEPTIONS @MethodName = 'RescheduleAppointment'";
 
             var hoursRescheduleCount = ExecuteScalarQuery(hoursRescheduleQuery);
             var rescheduledCount = ExecuteScalarQuery(rescheduledQuery);
 
-            var totalHits = hoursRescheduleCount + rescheduledCount;
+            var hoursRescheduleExceptionCount = ExecuteScalarQuery(hoursRescheduleExceptionQuery);
+            var rescheduledExceptionCount = ExecuteScalarQuery(rescheduledExceptionQuery);
 
+            var totalHits = hoursRescheduleCount + rescheduledCount;
+            var totalExceptions = 
             worksheet.Cells[currentRow, 1].Value = serialNumber;
             worksheet.Cells[currentRow, 2].Value = "Reschedule";
             worksheet.Cells[currentRow, 3].Value = totalHits;
