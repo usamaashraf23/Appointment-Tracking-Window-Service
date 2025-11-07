@@ -104,7 +104,7 @@ namespace WindowsService
             worksheet.Column(1).Width = 5;   // S#
             worksheet.Column(2).Width = 20;  // Events
             worksheet.Column(3).Width = 15;  // Total No. of Hits
-            worksheet.Column(4).Width = 30;  // Success Description (first sub-column)
+            worksheet.Column(4).Width = 35;  // Success Description (first sub-column)
             worksheet.Column(5).Width = 10;  // Success Count (second sub-column)
             worksheet.Column(6).Width = 20;  // Exception Reported
             worksheet.Column(7).Width = 10;  // Failure
@@ -418,6 +418,13 @@ namespace WindowsService
 
             var duplicateEntryQuery = @"EXEC sp_Appointment_Tracking_log @MethodName = 'DuplicateMessage'";
 
+            var invalidAppointmentQuery = @"SELECT COUNT(*)  FROM WS_TBL_SMARTTALKPHR_TRACKING 
+                                            WHERE App_source='AI_APPOINTMENT'
+                                            AND CONVERT(date, Logs_Date) = DATEADD(day, -1, CONVERT(date, GETDATE()))
+                                            AND MethodName = 'AddNewAppointment'
+                                            AND Log_Response LIKE'%Attempt to make appointment at slot which was not provided%'
+                                            AND Log_Request NOT LIKE '%""Practice_code"":""1011163""%'";
+
             var appointmentAddedExceptionQuery = @"EXEC WS_PROC_AI_APPOINTMENT_EXCEPTIONS @MethodName = 'AddedAppointment'";
             var alreadyScheduledExceptionQuery = @"EXEC WS_PROC_AI_APPOINTMENT_EXCEPTIONS @MethodName = 'AlreadyScheduledAppointment'";
             var daysMessageExceptionQuery = @"EXEC WS_PROC_AI_APPOINTMENT_EXCEPTIONS @MethodName = '14DaysMessage'";
@@ -427,6 +434,7 @@ namespace WindowsService
             var alreadyScheduledCount = ExecuteScalarQuery(alreadyScheduledQuery);
             var daysMessageCount = ExecuteScalarQuery(daysMessageQuery);
             var duplicateEntryCount = ExecuteScalarQuery(duplicateEntryQuery);
+            var invalidAppointmentCount = ExecuteScalarQuery(invalidAppointmentQuery);
 
             var appointmentAddedExceptionCount = ExecuteScalarQuery(appointmentAddedExceptionQuery);
             var alreadyScheduledExceptionCount = ExecuteScalarQuery(alreadyScheduledExceptionQuery);
@@ -434,7 +442,7 @@ namespace WindowsService
             var duplicateEntryExceptionCount = ExecuteScalarQuery(duplicateEntryExceptionQuery);
 
             var totalHits = appointmentAddedCount + alreadyScheduledCount + daysMessageCount + duplicateEntryCount;
-            var totalExceptionsHits = appointmentAddedExceptionCount + alreadyScheduledExceptionCount + daysMessageExceptionCount + duplicateEntryExceptionQuery;
+            var totalExceptionsHits = appointmentAddedExceptionCount + alreadyScheduledExceptionCount + daysMessageExceptionCount + duplicateEntryExceptionCount;
 
             worksheet.Cells[currentRow, 1].Value = serialNumber;
             worksheet.Cells[currentRow, 2].Value = "Add Appointment";
@@ -451,6 +459,16 @@ namespace WindowsService
             worksheet.Cells[currentRow, 3].Value = "";
             worksheet.Cells[currentRow, 4].Value = "Already Scheduled Message";
             worksheet.Cells[currentRow, 5].Value = alreadyScheduledCount;
+            worksheet.Cells[currentRow, 6].Value = "";
+            worksheet.Cells[currentRow, 7].Value = 0;
+            worksheet.Cells[currentRow, 8].Value = 0;
+            currentRow++;
+
+            worksheet.Cells[currentRow, 1].Value = "";
+            worksheet.Cells[currentRow, 2].Value = "";
+            worksheet.Cells[currentRow, 3].Value = "";
+            worksheet.Cells[currentRow, 4].Value = "Invalid Appointment Slots Provided";
+            worksheet.Cells[currentRow, 5].Value = invalidAppointmentCount;
             worksheet.Cells[currentRow, 6].Value = "";
             worksheet.Cells[currentRow, 7].Value = 0;
             worksheet.Cells[currentRow, 8].Value = 0;
